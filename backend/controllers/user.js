@@ -6,12 +6,14 @@ const { config } = require('dotenv');
 
 
 exports.signup = (req, res, next) => {
+    console.log(1, 'toto');
     bcrypt.hash(req.body.password, 10)
         .then(hash => {
             const user = new User({
                 email: req.body.email,
                 password : hash
             });
+            console.log(user);
             user.save()
             .then(() => res.status(201).json({ message : 'Utilisateur crée !'}))
             .catch(error => res.status(400).json({ error }));

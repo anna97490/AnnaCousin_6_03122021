@@ -18,12 +18,14 @@ exports.getOneSauce = (req, res, next) => {
 
 // Créer une sauce
 exports.createSauce = (req, res, next) => {
+    console.log('sauce');
     const sauceObject = JSON.parse(req.body.sauce)
     delete sauceObject._id
     const sauce = new Sauce({
         ...sauceObject,
         imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
     });
+    console.log(sauce);
     sauce.save()
         .then(() => res.status(201).json({ message : 'Sauce enregistrée !'}))
         .catch(error => res.status(400).json({ error }));
@@ -53,5 +55,32 @@ exports.deleteSauce = (req, res, next) => {
            });
         })
         .catch(error => res.status(500).json({ error: error }));     
+};
+
+// Like et Dislike des sauces
+exports.likeSauce = (req, res, next) => {
+    if (req.body.like == 1) { // Like
+        Sauce.updateOne({ _id: req.params.id }, { $push: { like: req.body.userId}, $inc: { like: +1} })
+            .then(() => res.status(200).json({ message: 'Sauce likée!'}))
+            .catch(error => res.status(400).json({ error }));
+    } else if (req.body.like == -1) { // Dislike
+        Sauce.updateOne({ _id: req.params.id }, { $push: { dislike: req.body.userId}, $inc: { like: -1} })
+            .then(() => res.status(200).json({ message: 'Sauce dislikée!'}))
+            .catch(error => res.status(400).json({ error }));
+    } else { // Like ou Dislike retiré
+        Sauce.findOne({ _id: req.params.id })
+        .then(sauce => {
+            if (sauce.like.includes(req.body.userId)) {
+                Sauce.updateOne(( { _id:req.params.id }, { $pull: { usersLiked: req.body.userId }, $inc: { likes: -1 } }))
+                    .then(() => res.status(200).json({ message: 'Like retiré!' }))
+                    .catch(error => res.status(400).json({ error }));
+            } else if (sauce.dislike.includes(req.body.userId)) {
+                Sauce.updateOne(( { _id:req.params.id },  { $pull: { usersLiked: req.body.userId }, $inc: { likes: -1 } }))
+                .then(() => res.status(200).json({ message: 'Dislike retiré!' }))
+                .catch(error => res.status(400).json({ error }));
+            }
+        })
+        .catch(error => res.status(400).json({ error }));
+    }
 };
 
