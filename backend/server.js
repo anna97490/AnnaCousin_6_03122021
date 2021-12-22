@@ -2,6 +2,7 @@
 
 // Accéder à l'objet http qui permet de créer le serveur
 const http = require('http');
+// Import
 const app = require('./app');
 
 const normalizePort = val => {

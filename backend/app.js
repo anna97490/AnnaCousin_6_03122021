@@ -1,9 +1,11 @@
-require('dotenv').config();
+// Imports
 const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
+require('dotenv').config();
 const sauceRoutes = require('./routes/sauce');
 const userRoutes = require('./routes/user');
+
 
 // Accès à la base de données 
 mongoose.connect(process.env.SECRET_DB,
@@ -11,11 +13,9 @@ mongoose.connect(process.env.SECRET_DB,
     useUnifiedTopology: true })
   .then(() => console.log('Connexion à MongoDB réussie !'))
   .catch(() => console.log('Connexion à MongoDB échouée !'));
-    const app = express();
-    const normalizePort = val => {
-        const port = parseInt(val, 10);
-}
-
+    
+const app = express();
+ 
 // Headers de l'objet réponse
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -33,4 +33,5 @@ app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use('/api/sauces', sauceRoutes);
 app.use('/api/auth', userRoutes);
 
+// Export
 module.exports = app;
