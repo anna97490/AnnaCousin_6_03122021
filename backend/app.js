@@ -1,21 +1,25 @@
 // Imports
 const express = require('express');
+const helmet = require('helmet');
 const mongoose = require('mongoose');
 const path = require('path');
 require('dotenv').config();
+
 const sauceRoutes = require('./routes/sauce');
 const userRoutes = require('./routes/user');
 
 
 // Accès à la base de données 
 mongoose.connect(process.env.SECRET_DB,
-  { useNewUrlParser: true,
-    useUnifiedTopology: true })
+  { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log('Connexion à MongoDB réussie !'))
   .catch(() => console.log('Connexion à MongoDB échouée !'));
     
 const app = express();
- 
+
+// Sécurisation des en-têtes HTTP
+app.use(helmet());
+
 // Headers de l'objet réponse
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');

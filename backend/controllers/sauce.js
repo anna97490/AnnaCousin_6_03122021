@@ -11,8 +11,8 @@ exports.createSauce = (req, res, next) => {
         imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
         likes: 0,
         dislikes: 0,
-        userLiked: [],
-        userDisliked: []
+        usersLiked: [],
+        usersDisliked: []
     });
     sauce.save()
         .then(() => res.status(201).json({ message : 'Post saved successfully!'}))
@@ -35,35 +35,14 @@ exports.getOneSauce = (req, res, next) => {
 
 // Modifier une sauce
 exports.modifySauce = (req, res, next) => {
-    Sauce.findOne({ _id: req.params.id })
-    .then((sauce) => {
-        const filename = sauce.imageUrl.split('/images/')[1];
-
-        if(req.file) {
-            fs.unlink(`images/${filename}`, () => {
-            });
-            const sauceObject = {
-                ...JSON.parse(req.body.sauce), 
-                imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
-            }
-            Sauce.updateOne({ _id: req.params.id }, { ...sauceObject, _id: req.params.id })
-            .then(() => res.status(200).json({ message: 'Sauce updated successfully!' }))
-            .catch(error => res.status(400).json({ error }));
-        } else {
-            const sauceObject = {...req.body}
-            Sauce.updateOne({ _id: req.params.id }, { ...sauceObject, _id: req.params.id })
-            .then(() => res.status(200).json({ message: 'Sauce modified!' }))
-            .catch(error => res.status(400).json({ error }));
-        }
-    });
-    /*const sauceObject = req.file ?
+    const sauceObject = req.file ?
     { 
       ...JSON.parse(req.body.sauce),
       imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
     } : { ...req.body };
     Sauce.updateOne({ _id: req.params.id }, { ...sauceObject, _id: req.params.id })
         .then(() => res.status(200).json({ message: 'Sauce updated successfully!' }))
-        .catch(error => res.status(400).json({ error }));*/
+        .catch(error => res.status(400).json({ error }));
 };
 
 // Supprimer une sauce
