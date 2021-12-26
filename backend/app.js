@@ -31,6 +31,9 @@ app.use((req, res, next) => {
 // Accès au corps de la req
 app.use(express.json());
 
+// Mongo-Sanitize contre les injections
+app.use('/user', require('./routes/user'));
+
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
 // Enregistrer les routes
