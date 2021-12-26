@@ -3,6 +3,7 @@ const express = require('express');
 const helmet = require('helmet');
 const mongoose = require('mongoose');
 const path = require('path');
+const mongoSanitize = require('express-mongo-sanitize');
 require('dotenv').config();
 
 const sauceRoutes = require('./routes/sauce');
@@ -32,8 +33,9 @@ app.use((req, res, next) => {
 app.use(express.json());
 
 // Mongo-Sanitize contre les injections
-app.use('/user', require('./routes/user'));
+app.use(mongoSanitize());
 
+// Les images
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
 // Enregistrer les routes
