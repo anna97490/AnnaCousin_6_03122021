@@ -7,7 +7,6 @@ module.exports = (req, res, next) => {
     } else {
         next();
     }
-    console.log(req.body.email);
 };
 
 

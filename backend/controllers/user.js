@@ -21,7 +21,6 @@ exports.signup = (req, res, next) => {
         );
     })
     .catch((error) => res.status(500).json({ error }));
-  console.log(req.body);
 };
 
 exports.login = (req, res, next) => {
@@ -38,7 +37,8 @@ exports.login = (req, res, next) => {
           }
           res.status(200).json({
             userId: user._id,
-            token: jwt.sign({ userId: user._id }, process.env.SECRET_TOKEN, {
+            token: jwt.sign({ userId: user._id }, process.env.SECRET_TOKEN, {// On vérifie le token a chq req effectuée par le frontend
+              // pour confirmer à l'api que cette req est authentifiée
               expiresIn: '24h',
             }),
           });

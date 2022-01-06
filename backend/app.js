@@ -2,6 +2,7 @@
 const express = require('express');
 const helmet = require('helmet');
 const mongoose = require('mongoose');
+// donne acces au chemin de notre systeme de fichier
 const path = require('path');
 const mongoSanitize = require('express-mongo-sanitize');
 require('dotenv').config();
